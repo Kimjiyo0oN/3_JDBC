@@ -36,7 +36,7 @@ public class EmployeeView {
 				System.out.println();
 				
 				 switch(input) {
-				 case 1: break;
+				 case 1: addEmployee(); break;
 				 case 2: selectAll(); break;
 				 case 3: break;
 				 case 4: break;
@@ -67,6 +67,45 @@ public class EmployeeView {
 		List<Employee> empList = dao.selectAll();
 		
 		printAll(empList);
+	}
+	
+	public void addEmployee() {
+		System.out.println("<새로운 사원 정보 추가>");
+		
+		System.out.print("직원 사번 : ");
+		int empId = sc.nextInt();
+		
+		System.out.print("직원 이름 : ");
+		String empName = sc.next();
+		
+		System.out.print("직원 주민 등록번호 : ");
+		String empNo = sc.next();
+		
+		System.out.print("직원 이메일 : ");
+		String email = sc.next();
+		
+		System.out.print("직원 전화번호 : ");
+		String phone = sc.next();
+		
+		System.out.println();
+		
+		System.out.print("부서명 : ");
+		String deptTitle = sc.nextLine();
+		
+		System.out.print("직책 : ");
+		String jobName  = sc.next();
+		
+		System.out.print("급여 : ");
+		int salary  = sc.nextInt();
+		
+		int result=dao.addEmployee(empId, empName, empNo, email, phone, deptTitle, jobName, salary)
+		if(result == 1) {
+			
+		}else {
+			System.out.println("사원 정보 추가 실패");
+		}
+		
+		
 	}
 	
 	/**전달 받은 사원 list 모두 출력

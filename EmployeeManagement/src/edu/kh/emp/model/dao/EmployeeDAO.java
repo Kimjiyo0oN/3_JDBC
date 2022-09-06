@@ -87,5 +87,41 @@ public class EmployeeDAO {
 		
 		// 5. 결과 반환
 		return empList;
+		
+	}
+	public int addEmployee(int empId,String empName,String empNo,String email,String phone,String deptTitle,String jobName,int salary) {
+		try {
+			// 2. JDBC 참조 변수에 객체 대입
+			// -> conn, stmt, rs에 객체 대입
+			Class.forName(driver); // 오라클 jdbc 드라이버 객체 메모리 로드
+			conn = DriverManager.getConnection(url, user, pw);
+			
+			String sql = "INSERT All INTO EMPLOYEE(EMP_ID , EMP_NAME , EMP_NO , EMAIL , PHONE , DEPT_TITLE, JOB_NAME, SALARY)"
+					+ " VALUES('" + empId + "', '" + empName + "', '" + empNo + "', '" + email + "', '" + phone + "',"
+					+ "'" + deptTitle + "', '" + jobName + "', " + salary + ")";
+			
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			
+			String sql1 = "";
+			
+			//stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql1);
+			
+		} catch(Exception e){
+			e.printStackTrace();	
+		} finally {
+			try {
+				
+				//4. JDBC 객체 자원 반환
+				if(rs != null) rs.close();
+				if(stmt != null) stmt.close();
+				if(conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+			
+		return 1;
 	}
 }
