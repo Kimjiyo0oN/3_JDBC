@@ -11,10 +11,33 @@ public class Employee {
 	   private String jobName; // 직급명
 	   private int salary; // 급여
 	   
-	   public void Employee() {}
+	   private String deptCode; //부서코드
+	   private String salLevel; // 급여등급
+	   private String jobCode; // 직급코드
+	   private double bonus; // 보너스
+	   private int managerid; //사수번호
 	   
-	   //alt + shift +s +o 
+	   public Employee() {}
+	   
 	   public Employee(int empId, String empName, String empNo, String email, String phone, String departmentTitle,
+			String jobName, int salary, double bonus, int managerid) {
+		super();
+		this.empId = empId;
+		this.empName = empName;
+		this.empNo = empNo;
+		this.email = email;
+		this.phone = phone;
+		this.departmentTitle = departmentTitle;
+		this.jobName = jobName;
+		this.salary = salary;
+		this.bonus = bonus;
+		this.managerid = managerid;
+	}
+
+
+
+	//alt + shift +s +o 
+	 public Employee(int empId, String empName, String empNo, String email, String phone, String departmentTitle,
 			   String jobName, int salary) {
 		   super();
 		   this.empId = empId;
@@ -25,7 +48,63 @@ public class Employee {
 		   this.departmentTitle = departmentTitle;
 		   this.jobName = jobName;
 		   this.salary = salary;
-	   }
+	}
+	 
+	public Employee(int empId, String empName, String empNo, String email, String phone, int salary, String deptCode,
+			String salLevel, String jobCode, double bonus, int managerid) {
+		super();
+		this.empId = empId;
+		this.empName = empName;
+		this.empNo = empNo;
+		this.email = email;
+		this.phone = phone;
+		this.salary = salary;
+		this.deptCode = deptCode;
+		this.salLevel = salLevel;
+		this.jobCode = jobCode;
+		this.bonus = bonus;
+		this.managerid = managerid;
+	}
+
+	public String getDeptCode() {
+		return deptCode;
+	}
+
+	public void setDeptCode(String deptCode) {
+		this.deptCode = deptCode;
+	}
+
+	public String getSalLevel() {
+		return salLevel;
+	}
+
+	public void setSalLevel(String salLevel) {
+		this.salLevel = salLevel;
+	}
+
+	public String getJobCode() {
+		return jobCode;
+	}
+
+	public void setJobCode(String jobCode) {
+		this.jobCode = jobCode;
+	}
+
+	public double getBonus() {
+		return bonus;
+	}
+
+	public void setBonus(double bonus) {
+		this.bonus = bonus;
+	}
+
+	public int getManagerid() {
+		return managerid;
+	}
+
+	public void setManagerid(int managerid) {
+		this.managerid = managerid;
+	}
 
 	public int getEmpId() {
 		return empId;
@@ -95,7 +174,9 @@ public class Employee {
 	public String toString() {
 		return "Employee [empId=" + empId + ", empName=" + empName + ", empNo=" + empNo + ", email=" + email
 				+ ", phone=" + phone + ", departmentTitle=" + departmentTitle + ", jobName=" + jobName + ", salary="
-				+ salary + "]";
+				+ salary + ", deptCode=" + deptCode + ", salLevel=" + salLevel + ", jobCode=" + jobCode + ", bonus="
+				+ bonus + ", managerid=" + managerid + "]";
 	}
-	   
+
+	
 }
