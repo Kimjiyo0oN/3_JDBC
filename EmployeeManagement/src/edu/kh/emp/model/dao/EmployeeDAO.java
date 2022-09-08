@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import edu.kh.emp.model.vo.Employee;
@@ -444,5 +446,166 @@ public class EmployeeDAO {
 			}
 		}
 		return result;
+	}
+	/**직급별 급여 평균 조회
+	 * @return
+	 */
+	public Map<String, Double> selectJobAvgSalary() {
+		Map<String, Double> map = new HashMap<String, Double>();
+		
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, user,pw);
+			
+			String sql = "SELECT JOB_NAME,TRUNC(AVG(SALARY),1) AS 평균급여 \r\n"
+					+ "FROM EMPLOYEE\r\n"
+					+ "LEFT JOIN JOB USING (JOB_CODE)\r\n"
+					+ "GROUP BY JOB_NAME";
+			
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				map.put(rs.getString("JOB_NAME"), rs.getDouble("평균급여"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(rs != null) rs.close();
+				if(stmt != null) stmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return map;
+	}
+	public List<Employee> selectDeptEmp(String departmentTitle) {
+		List<Employee> list = new ArrayList<>();
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, user, pw);
+			
+			String sql = "SELECT EMP_ID , EMP_NAME , EMP_NO , EMAIL , PHONE , NVL(DEPT_TITLE, '부서없음') DEPT_TITLE, JOB_NAME, SALARY\r\n"
+					+ "FROM EMPLOYEE \r\n"
+					+ "LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)\r\n"
+					+ "JOIN JOB USING(JOB_CODE)\r\n"
+					+ "WHERE DEPT_TITLE = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, departmentTitle);
+			
+			rs= pstmt.executeQuery();
+			
+			while(rs.next()) {
+				int empId = rs.getInt("EMP_ID"); 
+				// EMP_ID 컬럼은 문자열 컬럼이지만 저장된 값들이 모두 숫자형태 
+				// -> DB에서 자동으로 형변환 진행해서 얻어옴 
+				String empName = rs.getString("EMP_NAME");
+				String empNo = rs.getString("EMP_NO");
+				String email = rs.getString("EMAIL");
+				String phone = rs.getString("PHONE");
+				String deptTitle = rs.getString("DEPT_TITLE");
+				String jobName = rs.getString("JOB_NAME");
+				int salary = rs.getInt("SALARY");
+				list.add(new Employee(empId, empName, empNo, email, phone, deptTitle, jobName, salary));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+	public List<Employee> selectSalaryEmp(int sal) {
+		List<Employee> list = new ArrayList<>();
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, user, pw);
+			
+			String sql = "SELECT EMP_ID , EMP_NAME , EMP_NO , EMAIL , PHONE , NVL(DEPT_TITLE, '부서없음') DEPT_TITLE, JOB_NAME, SALARY\r\n"
+					+ "FROM EMPLOYEE \r\n"
+					+ "LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)\r\n"
+					+ "JOIN JOB USING(JOB_CODE)\r\n"
+					+ "WHERE SALARY  >= ?\r\n"
+					+ "ORDER BY SALARY";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, sal);
+			
+			rs= pstmt.executeQuery();
+			
+			while(rs.next()) {
+				int empId = rs.getInt("EMP_ID"); 
+				// EMP_ID 컬럼은 문자열 컬럼이지만 저장된 값들이 모두 숫자형태 
+				// -> DB에서 자동으로 형변환 진행해서 얻어옴 
+				String empName = rs.getString("EMP_NAME");
+				String empNo = rs.getString("EMP_NO");
+				String email = rs.getString("EMAIL");
+				String phone = rs.getString("PHONE");
+				String deptTitle = rs.getString("DEPT_TITLE");
+				String jobName = rs.getString("JOB_NAME");
+				int salary = rs.getInt("SALARY");
+				list.add(new Employee(empId, empName, empNo, email, phone, deptTitle, jobName, salary));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+	public Map<String, Integer> selectDeptTotalSalary() {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, user,pw);
+			
+			String sql = "SELECT NVL(DEPT_ID,'부서없음') AS DEPT_CODE, NVL(SUM(SALARY),0) AS 급여합\r\n"
+					+ "FROM EMPLOYEE\r\n"
+					+ "FULL OUTER JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)\r\n"
+					+ "GROUP BY DEPT_ID\r\n"
+					+ "ORDER BY DEPT_ID ASC";
+			
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				map.put(rs.getString("DEPT_CODE"), rs.getInt("급여합")) ;	
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(rs != null) rs.close();
+				if(stmt != null) stmt.close();
+				if(conn != null) conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return map;
 	}
 }

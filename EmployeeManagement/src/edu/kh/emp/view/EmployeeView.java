@@ -1,7 +1,10 @@
 package edu.kh.emp.view;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import edu.kh.emp.model.dao.EmployeeDAO;
@@ -21,7 +24,7 @@ public class EmployeeView {
 				System.out.println("---------------------------------------------------------");
 				System.out.println("----- 사원 관리 프로그램 -----");
 				System.out.println("1. 새로운 사원 정보 추가");
-				System.out.println("1-2. 새로운 사원 정보 추가(선택번호는 10번)");
+				System.out.println("1-2. 새로운 사원 정보 추가(선택번호는 11번)");
 				System.out.println("2. 전체 사원 정보 조회");
 				System.out.println("3. 사번이 일치하는 사원 정보 조회");
 				System.out.println("4. 사번이 일치하는 사원 정보 수정");
@@ -30,6 +33,7 @@ public class EmployeeView {
 				System.out.println("7. 입력 받은 급여 이상을 받는 모든 사원 정보 조회");
 				System.out.println("8. 부서별 급여 합 전체 조회");
 				System.out.println("9. 주민등록번호가 일치하는 사원 정보 조회");
+				System.out.println("10. 직급별 급여 평균 조회");
 				System.out.println("0. 프로그램 종료");
 				
 				System.out.print("메뉴 선택 >> ");
@@ -38,16 +42,17 @@ public class EmployeeView {
 				System.out.println();
 				
 				 switch(input) {
-				 case 10: addEmployee(); break; 
+				 case 11: addEmployee(); break; 
 				 case 1: insertEmployee(); break; 
 				 case 2: selectAll(); break;
 				 case 3: selectEmpId(); break;
 				 case 4: updateEmployee(); break;
 				 case 5: deleteEmployee(); break;
-				 case 6: break; //selectDepartment();
-				 case 7: break;
-				 case 8: break;
+				 case 6: selectDeptEmp(); break; //selectDepartment();
+				 case 7: selectSalaryEmp(); break;
+				 case 8: selectDeptTotalSalary(); break;
 				 case 9: selectEmpNo(); break;
+				 case 10:selectJobAvgSalary(); break;
 				 case 0: System.out.println("프로그램을 종료합니다. "); break;
 				 default: System.out.println("메뉴에 존재하는 번호만 입력하세요. ");
 				 }
@@ -59,6 +64,75 @@ public class EmployeeView {
 			}
 		}while(input !=0);
 	}
+	
+	private void selectDeptTotalSalary() {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		System.out.println("<부서별 급여 합 전체 조회>");
+		
+		map =dao.selectDeptTotalSalary();
+	
+		System.out.println("  부서코드     |  급여합  " );
+		System.out.println("------------------------------------------------------------------------------------------------");
+		for(String s : map.keySet()) { 
+			System.out.printf("%-7s|    %d\n",
+					s, map.get(s)); 
+		}
+		
+	}
+
+	private void selectSalaryEmp() {
+		System.out.println("<입력 받은 급여 이상을 받는 모든 사원 정보 조회>");
+		
+		System.out.print("급여 입력 : ");
+		int salary = sc.nextInt();
+		
+		List<Employee> empList = dao.selectSalaryEmp(salary);
+		
+		printAll(empList);
+		
+	}
+
+	private void selectDeptEmp() {
+		System.out.println("<입력 받은 부서와 일치 모든 사원 정보 조회>");
+		
+		System.out.print("부서 입력 : ");
+		String deptTitle = sc.next();
+		
+		List<Employee> empList = dao.selectDeptEmp(deptTitle);
+		
+		printAll(empList);
+	}
+
+	private void selectJobAvgSalary() {
+		Map<String, Double> map = new HashMap<String, Double>();
+		System.out.println("<10. 직급별 급여 평균 조회>");
+		
+		map =dao.selectJobAvgSalary();
+	
+		System.out.println("  직급명   |   평균급여" );
+		System.out.println("------------------------------------------------------------------------------------------------");
+		for(String s : map.keySet()) { 
+			System.out.printf("  %4s   |    %.1f\n",
+					s , map.get(s)); 
+		}
+		
+		
+	}
+//	private void selectJobAvgSalary() {
+//		List<Employee> list = new ArrayList<>();
+//		System.out.println("<10. 직급별 급여 평균 조회>");
+//		
+//		list =dao.selectJobAvgSalary();
+//	
+//		System.out.println("  직급명   |   평균급여" );
+//		System.out.println("------------------------------------------------------------------------------------------------");
+//		for(Employee emp : list) { 
+//			System.out.printf("  %4s   |    %.1d\n",
+//					emp.getJobName(), emp.getSalary()); 
+//		}
+//		
+//		
+//	}
 	/**
 	 * 사원 정보 추가 새로운 방법으로 시도 해보고 싶음
 	 */
@@ -111,7 +185,7 @@ public class EmployeeView {
 	 * 사원 정보 추가 
 	 */
 	public void insertEmployee() {
-		System.out.println("<새로운 사원 정보 추가>");
+		System.out.println("<새로운 사원 정eat보 추가>");
 	
 		int empId = inputEmpId();
 	
@@ -233,19 +307,7 @@ public class EmployeeView {
 		
 		return empId;
 	}
-//	public void selectDepartment() {
-//		System.out.println("<입력 받은 부서와 일치 모든 사원 정보 조회>");
-//		
-//		System.out.print("부서 입력 : ");
-//		
-//		String deptTitle = sc.nextLine();
-//		sc.nextLine();
-//		
-//		Employee emp = dao.selectDepartment();
-//		
-//		printOne(emp);
-//		
-//	}
+	
 	public void selectEmpNo() {
 		System.out.println("<주민등록번호가 일치하는 사원 정보 조회>");
 		
