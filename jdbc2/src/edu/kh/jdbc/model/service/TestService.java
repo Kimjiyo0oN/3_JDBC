@@ -106,10 +106,7 @@ public class TestService {
 			close(conn);
 		}
 		
-		
-		
 		return res; //insert 3회 결과 반환
 	}
-	
 	
 }
