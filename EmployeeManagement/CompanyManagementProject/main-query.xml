@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>main-query.xml file</comment>
+	<entry key = "login">SELECT * FROM EMP_TB
+	 LEFT JOIN TEAM_TB USING(TEAM_CODE)
+	 LEFT JOIN DEPT_TB USING(DEPT_CODE)
+	 WHERE EMP_ID = ? AND EMP_PW =?</entry>
+	 <entry key = "findID">SELECT * FROM EMP_TB
+	 WHERE EMP_NO = ? AND(TEAM_CODE IN('HQ','DC') OR (DEPT_CODE = 'SM' AND JOB_CODE = 'SA'))</entry>
+	 <entry key ="findPW">UPDATE EMP_TB SET EMP_PW = ?
+	WHERE EMP_SSN = ?</entry>
+	<entry key ="loginList">SELECT * FROM EMP_TB 
+	WHERE (TEAM_CODE IN('HQ','DC') OR (DEPT_CODE = 'SM' AND JOB_CODE = 'SA'))</entry>
+</properties>
