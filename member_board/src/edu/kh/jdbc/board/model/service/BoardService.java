@@ -107,7 +107,7 @@ public class BoardService {
 
 	public int delectBoard(int boardNo) throws Exception{
 		Connection conn = getConnection();
-		
+			
 		int result=dao.delectBoard(conn,boardNo);
 		
 		if(result >0 ) commit(conn);
@@ -115,6 +115,55 @@ public class BoardService {
 		
 		close(conn);
 		return result;
+	}
+
+	/** 게시글 등록 서비스 
+	 * @param board
+	 * @return result
+	 * @throws Exception
+	 */
+	public int insertBoard(Board board) throws Exception{
+		Connection conn = getConnection();
+		
+		//게시글 번호 생성 DAO 호출
+		//왜? 동시에 여러 사람이 게시글을 등록하면
+		//시쿼스가 한번에 증가하면 CURRVAL 구문이 이용하면 문제가 발생함
+		//->게시글 등록 서비스를 호출한 순서대로
+		//  미리 게시글 번호를 생성해서 얻어온 다음 이를 이용해 
+		//board.setBoardNo(dao.nextBoardNO(conn));
+		
+		int boardNo = dao.nextBoardNO(conn);
+		
+		board.setBoardNo(boardNo); //얻어온 다음 번호를 board에 세팅
+		//->다음 게시글 번호, 제목,내용 
+		
+		int result = dao.insertBoard(conn, board);
+		
+		if(result > 0) { 
+			commit(conn);
+			result = boardNo;
+			//INSERT 성공 시 생성된 게시글 번호(boardNo)를 반환 
+		}
+		else rollback(conn);
+		
+		close(conn);
+		return result;
+	}
+
+	/** 게시글 검색
+	 * @param condition
+	 * @param query
+	 * @return boardList
+	 * @throws Exception
+	 */
+	public List<Board> searchBoard(int condition, String query) throws Exception{
+		Connection conn = getConnection();
+		
+		List<Board> boardList =dao.searchBoard(conn, condition, query);
+		
+		close(conn);
+		
+		return boardList;
 	}
 	
 }
