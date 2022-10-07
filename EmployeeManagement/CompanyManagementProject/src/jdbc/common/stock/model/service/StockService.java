@@ -63,5 +63,15 @@ public class StockService {
 		}
 		return result;
 	}
+
+	public List<Stock> RIAR(String teamCode, String date) throws Exception{
+		Connection conn = getConnection();
+		
+		List<Stock> stockList = dao.RIAR(conn,teamCode,date);
+		
+		close(conn); 
+		
+		return stockList;
+	}
 	
 }

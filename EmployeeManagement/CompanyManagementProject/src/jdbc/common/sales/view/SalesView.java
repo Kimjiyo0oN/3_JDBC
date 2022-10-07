@@ -96,28 +96,41 @@ public class SalesView {
 					switch (input1) {
 					case 1:
 						List<Sales> salesList = Sservice.bestSales(teamCode, input1);
-						
-						if(!salesList.isEmpty()) {
-							System.out.println(" 상품코드          상품이름           판매수량             판매금액");
-							System.out.println("-------------------------------------------------------------");
-							for(Sales s : salesList) {
-								System.out.printf("%s        %5s          %5d          %10d원\n",s.getProduct().getProductCode(),s.getProduct().getProductName()
-																						 ,s.getSalesAmount(),s.getTotalPrice());
+						totalBestSales(salesList);
+						if(teamCode.equals("DC")||teamCode.equals("HQ")) {
+							System.out.print("\n매장별 조회하시겠습니다 (Y/N): ");
+							String selectYN = sc.next();
+							sc.nextLine();
+							System.out.println();
+							if(selectYN.equals("Y")) {
+								System.out.print("매장코드 : ");
+								teamCode= sc.next();
+								List<Sales> salesList3 = Sservice.bestSales(teamCode, input1);
+								totalBestSales(salesList3);
+								teamCode = loginEmployee.getTeamCode();
+							}else {
+								System.out.println("[매출 관리로 이동합니다.]");
 							}
 						}
 						break;
 					case 2: 
 						List<Sales> salesList1 = Sservice.bestSales(teamCode, input1);
-						
-						if(!salesList1.isEmpty()) {
-							System.out.println(" 판매월            상품코드             상품이름           판매수량             판매금액");
-							System.out.println("--------------------------------------------------------------------------------");
-							for(Sales s : salesList1) {
-								System.out.printf("%s           %s            %5s          %5d          %10d원\n"
-																,s.getSalesDate(),s.getProduct().getProductCode(),s.getProduct().getProductName()
-																,s.getSalesAmount(),s.getTotalPrice());
+						monthBestSales(salesList1);
+						if(teamCode.equals("DC")||teamCode.equals("HQ")) {
+							System.out.print("\n매장별 조회하시겠습니다 (Y/N): ");
+							String selectYN = sc.next();
+							sc.nextLine();
+							System.out.println();
+							if(selectYN.equals("Y")) {
+								System.out.print("매장코드 : ");
+								teamCode= sc.next();
+								List<Sales> salesList4 = Sservice.bestSales(teamCode, input1);
+								monthBestSales(salesList4);
+								teamCode = loginEmployee.getTeamCode();
+							}else {
+								System.out.println("[매출 관리로 이동합니다.]");
 							}
-						}
+						}	
 						break;
 					case 0: System.out.println("[매출 관리로 이동합니다.]"); break;
 					default: System.out.println("정확한 메뉴 번호를 선택해주세요.");
@@ -137,29 +150,22 @@ public class SalesView {
 		System.out.println("\n[매출 실적 조회]\n");
 		try {
 			String teamCode =loginEmployee.getTeamCode();
-			List<Sales> salesList = Sservice.salesResultT(teamCode);
-			List<Sales> salesList1 = Sservice.salesResultC(teamCode);
-			if(!salesList.isEmpty()) {
-				System.out.println("------------------------------------월별 전체 달성률----------------------------------");
-				System.out.println(" 매장코드       판매월                 판매매출              목표금액               달성률");
-				System.out.println("----------------------------------------------------------------------------------");
-				for(Sales s : salesList) {
-					System.out.printf("%s         %s          %10d원          %10d원             %5.2f",s.getTeamCode(),s.getSalesDate()
-																			,s.getTotalPrice() ,s.getTargetPrice(),s.getSalesPer());
-					System.out.println("%");
+			targetSalesFuntion(teamCode);
+			if(loginEmployee.getTeamCode().equals("DC")||loginEmployee.getTeamCode().equals("HQ")) {
+				System.out.print("\n매장별 조회하시겠습니다 (Y/N): ");
+				String selectYN = sc.next();
+				sc.nextLine();
+				System.out.println();
+				if(selectYN.equals("Y")) {
+					System.out.print("매장코드 : ");
+					teamCode= sc.next();
+					targetSalesFuntion(teamCode);
+					//teamCode = loginEmployee.getTeamCode();
+				}else {
+					System.out.println("[매출 관리로 이동합니다.]");
 				}
-			}
-			if(!salesList1.isEmpty()) {
-				System.out.println("---------------------------------------------분류별 달성률-------------------------------------------");
-				System.out.println(" 매장코드      판매월            상품분류코드            판매매출                목표금액               달성률");
-				System.out.println("--------------------------------------------------------------------------------------------------");
-				for(Sales s : salesList1) {
-					System.out.printf("%s         %s         %s          %10d원          %10d원             %5.2f"
-																	,s.getTeamCode(),s.getSalesDate()
-																	,s.getProduct().getCategoryCode(),s.getTotalPrice() ,s.getTargetPrice(),s.getSalesPer());
-					System.out.println("%");
-				}
-			}
+			}	
+			
 		} catch (Exception e) {
 			System.out.println("\n<<매출 실적 조회 중 에러가 발생했습니다.>>\n");
 			e.printStackTrace();
@@ -176,37 +182,89 @@ public class SalesView {
 		String selectName ="";
 		try {
 			List<Sales> salesList = Sservice.productSales(selectYN,selectName);
-			
-			if(!salesList.isEmpty()) {
-				System.out.println(" 매장코드         상품코드                 상품이름           재고수량         판매수량");
-				System.out.println("---------------------------------------------------------------------------");
-				for(Sales s : salesList) {
-					System.out.printf("%5s        %10s          %10s          %5d          %5d\n"
-																,s.getTeamCode(),s.getProduct().getProductCode(),s.getProduct().getProductName()
-															  ,s.getTotalAmount(),s.getSalesAmount());
-				}
-			}
+			productSalesPrint(salesList);
 			System.out.print("상품별 검색을 원하십니까? (Y/N):");
 			selectYN = sc.next();
 			if(selectYN.equals("Y")) {
 				System.out.print("상품이름 : ");
 				selectName= sc.next();
 				List<Sales> salesList1 = Sservice.productSales(selectYN,selectName);
-				if(!salesList1.isEmpty()) {
-					System.out.println(" 매장코드         상품코드                 상품이름           재고수량         판매수량");
-					System.out.println("---------------------------------------------------------------------------");
-					for(Sales s : salesList1) {
-						System.out.printf("%5s        %10s          %10s          %5d          %5d\n"
-																	,s.getTeamCode(),s.getProduct().getProductCode(),s.getProduct().getProductName()
-																  ,s.getTotalAmount(),s.getSalesAmount());
-					}
-				}
+				productSalesPrint(salesList1);
 			}else {
 				System.out.println("[매출 관리로 이동합니다.]");
 			}
 		} catch (Exception e) {
 			System.out.println("\n<<단품 전점 매출 현황 조회 중 에러가 발생했습니다.>>\n");
 			e.printStackTrace();
+		}
+	}
+	
+	private void totalBestSales(List<Sales> salesList3) throws Exception{
+		if(!salesList3.isEmpty()) {
+			System.out.println(" 상품코드          상품이름           판매수량             판매금액");
+			System.out.println("-------------------------------------------------------------");
+			for(Sales s : salesList3) {
+				System.out.printf("%s        %5s          %5d          %10d원\n",s.getProduct().getProductCode(),s.getProduct().getProductName()
+																		 ,s.getSalesAmount(),s.getTotalPrice());
+			}
+		}
+	}
+	private void monthBestSales(List<Sales> salesList4) throws Exception{
+		if(!salesList4.isEmpty()) {
+			System.out.println(" 판매월            상품코드             상품이름           판매수량             판매금액");
+			System.out.println("--------------------------------------------------------------------------------");
+			for(Sales s : salesList4) {
+				System.out.printf("%s           %s            %5s          %5d          %10d원\n"
+						,s.getSalesDate(),s.getProduct().getProductCode(),s.getProduct().getProductName()
+						,s.getSalesAmount(),s.getTotalPrice());
+			}
+		}
+	}
+	
+	/** 단품전점 판매 현황 출력
+	 * @param salesList1
+	 * @throws Exception
+	 */
+	private void productSalesPrint(List<Sales> salesList1)throws Exception{
+		if(!salesList1.isEmpty()) {
+			System.out.println(" 매장코드         상품코드                 상품이름           재고수량         판매수량");
+			System.out.println("---------------------------------------------------------------------------");
+			for(Sales s : salesList1) {
+				System.out.printf("%5s        %10s          %10s          %5d          %5d\n"
+															,s.getTeamCode(),s.getProduct().getProductCode(),s.getProduct().getProductName()
+														  ,s.getTotalAmount(),s.getSalesAmount());
+			}
+		}else {
+			System.out.println("없는 상품이름을 입력하셨습니다.");
+		}
+	}
+	/**달성률 출력
+	 * @param teamCode
+	 * @throws Exception
+	 */
+	private void targetSalesFuntion(String teamCode) throws Exception {
+		List<Sales> salesList = Sservice.salesResultT(teamCode);
+		List<Sales> salesList1 = Sservice.salesResultC(teamCode);
+		if(!salesList.isEmpty()) {
+			System.out.println("------------------------------------월별 전체 달성률----------------------------------");
+			System.out.println(" 매장코드       판매월                 판매매출              목표금액               달성률");
+			System.out.println("----------------------------------------------------------------------------------");
+			for(Sales s : salesList) {
+				System.out.printf("%s         %s          %10d원          %10d원             %5.2f",s.getTeamCode(),s.getSalesDate()
+																		,s.getTotalPrice() ,s.getTargetPrice(),s.getSalesPer());
+				System.out.println("%");
+			}
+		}
+		if(!salesList1.isEmpty()) {
+			System.out.println("---------------------------------------------분류별 달성률-------------------------------------------");
+			System.out.println(" 매장코드      판매월            상품분류코드            판매매출                목표금액               달성률");
+			System.out.println("--------------------------------------------------------------------------------------------------");
+			for(Sales s : salesList1) {
+				System.out.printf("%s         %s         %s          %10d원          %10d원             %5.2f"
+																,s.getTeamCode(),s.getSalesDate()
+																,s.getProduct().getCategoryCode(),s.getTotalPrice() ,s.getTargetPrice(),s.getSalesPer());
+				System.out.println("%");
+			}
 		}
 	}
 }

@@ -192,4 +192,66 @@ public class StockDAO {
 		}
 		return result;
 	}
+
+	public List<Stock> RIAR(Connection conn, String teamCode, String date) throws Exception{
+		List<Stock> stockList = new ArrayList<>();
+		try {
+			
+			boolean flag = false;
+			String sql = null;
+			if(teamCode.equals("DC")||teamCode.equals("HQ")) {
+				sql= prop.getProperty("RIAR"); 
+				
+			}else {
+				 sql= prop.getProperty("RIAR_DM");   
+				 flag = true;
+			}
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			if(flag) {
+				pstmt.setString(1, date);
+				pstmt.setString(2, date);
+				pstmt.setString(3, date);
+				pstmt.setString(4, date);
+				pstmt.setString(5, date);
+				pstmt.setString(6, date);
+				pstmt.setString(7, teamCode);
+			}else {
+				pstmt.setString(1, date);
+				pstmt.setString(2, date);
+				pstmt.setString(3, date);
+				pstmt.setString(4, date);
+				pstmt.setString(5, date);
+				pstmt.setString(6, date);
+			}
+			
+			rs = pstmt.executeQuery();
+						 
+
+			while(rs.next()) {
+//				,s.getTeamCode(),s.getProduct().getProductCode()
+//				,s.getProduct().getProductName(),s.getOStock(),s.getCStock(),s.getSalesStock()
+//				,s.getITR(),s.getDaysOfIn());
+				Stock st = new Stock();
+				Product p =new Product();
+				st.setTeamCode(rs.getString("팀코드"));
+				p.setProductCode(rs.getString("상품코드"));
+				p.setProductName(rs.getString("상품이름"));
+				st.setProduct(p);
+				st.setOStock(rs.getInt("기초재고"));
+				st.setCStock(rs.getInt("기말재고"));
+				st.setSalesStock(rs.getInt("출고량"));
+				st.setITR(rs.getString("재고회전율"));
+				st.setDaysOfIn(rs.getString("재고일수"));
+				stockList.add(st);
+			}
+						
+			
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return stockList;
+	}
 }

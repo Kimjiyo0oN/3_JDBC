@@ -9,6 +9,11 @@ public class Stock {
 	private String teamNM;
 	private String teamCode;
 	private String targetTeamCode;
+	private int OStock;
+	private int CStock;
+	private int salesStock;
+	private String ITR;
+	private String daysOfIn;
 	
 	private Product product;
 	
@@ -76,6 +81,46 @@ public class Stock {
 
 	public void setTargetTeamCode(String targetTeamCode) {
 		this.targetTeamCode = targetTeamCode;
+	}
+
+	public int getOStock() {
+		return OStock;
+	}
+
+	public void setOStock(int oStock) {
+		OStock = oStock;
+	}
+
+	public int getCStock() {
+		return CStock;
+	}
+
+	public void setCStock(int cStock) {
+		CStock = cStock;
+	}
+
+	public int getSalesStock() {
+		return salesStock;
+	}
+
+	public void setSalesStock(int salesStock) {
+		this.salesStock = salesStock;
+	}
+
+	public String getITR() {
+		return ITR;
+	}
+
+	public void setITR(String iTR) {
+		ITR = iTR;
+	}
+
+	public String getDaysOfIn() {
+		return daysOfIn;
+	}
+
+	public void setDaysOfIn(String daysOfIn) {
+		this.daysOfIn = daysOfIn;
 	}
 
 	public Product getProduct() {

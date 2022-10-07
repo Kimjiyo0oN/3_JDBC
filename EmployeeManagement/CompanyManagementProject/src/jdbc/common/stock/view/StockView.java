@@ -28,9 +28,9 @@ private Scanner sc = new Scanner(System.in);
 			try {
 				System.out.println("\n--------- 재고관리 ---------\n");
 				System.out.println("1. 재고현황");
-				//System.out.println("2. 재고분석");
-				System.out.println("2. 발주현황");
-				if(!loginEmployee.getTeamCode().equals("HQ")&&!loginEmployee.getTeamCode().equals("DC"))System.out.println("3. 점포 발주 등록");
+				System.out.println("2. 재고분석");
+				System.out.println("3. 발주현황");
+				if(!loginEmployee.getTeamCode().equals("HQ")&&!loginEmployee.getTeamCode().equals("DC"))System.out.println("4. 점포 발주 등록");
 				System.out.println("0. 메인메뉴로 이동");
 				
 				System.out.print("\n메뉴 선택 : ");
@@ -41,9 +41,9 @@ private Scanner sc = new Scanner(System.in);
 				
 				switch (input) {
 				case 1: stockST(loginEmployee); break;
-				//case 2: break;
-				case 2: orderST(loginEmployee);break;
-				case 3: 
+				case 2: RIAR(loginEmployee); break;
+				case 3: orderST(loginEmployee);break;
+				case 4: 
 					if(!loginEmployee.getTeamCode().equals("HQ")&&!loginEmployee.getTeamCode().equals("DC")) {
 						insertorder();
 				}
@@ -60,6 +60,38 @@ private Scanner sc = new Scanner(System.in);
 		
 	}
 	
+	/** 재고분석
+	 * @param loginEmployee
+	 */
+	private void RIAR(Employee loginEmployee) {
+		System.out.println("\n[재고 분석 조회]\n");
+		try {
+			String teamCode =loginEmployee.getTeamCode();
+			System.out.print("월 (YY/MM)형식으로 입력해주세요: ");
+			String date = sc.next();
+			List<Stock> stockList1 = Stservice.RIAR(teamCode,date);
+			/*
+			 * private int OStock; private int CStock; private int salesStock; private
+			 * String ITR; private String daysOfIn;
+			 */
+			if(!stockList1.isEmpty()) {
+				System.out.println(" 매장코드          상품코드           상품이름         기초재고       기말재고       출고량           재고회전율          재고일수");
+				System.out.println("------------------------------------------------------------------------------------------------------------------");
+				for(Stock s : stockList1) {
+					System.out.printf("%5s            %5s          %5s     %5d         %5d       %5d       %10s       %10s\n"
+							,s.getTeamCode(),s.getProduct().getProductCode()
+							,s.getProduct().getProductName(),s.getOStock(),s.getCStock(),s.getSalesStock()
+							,s.getITR(),s.getDaysOfIn());
+				}
+			}
+			
+		} catch (Exception e) {
+			System.out.println("\n<<재고 분석 조회 중 에러가 발생했습니다.>>\n");
+			e.printStackTrace();
+		}
+		
+	}
+
 	/**재고현황
 	 * @param loginEmployee
 	 */
